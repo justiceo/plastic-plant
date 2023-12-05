@@ -18,6 +18,31 @@ class Journal {
       ?.addEventListener("click", this.startSpeechRecognition);
   }
 
+  async submitFeedback(event, feedbackType) {
+    console.log("submitting feedback...");
+    const container = event.target.closest(".msg-container");
+    const req = container.querySelector(".hidden-req")?.textContent;
+    const response = container.querySelector(".bubble span")?.textContent;
+
+    const feedbackData = {
+      request: req,
+      response: response,
+      feedbackType: feedbackType,
+    };
+    console.log("sending feedbackData:", feedbackData);
+
+    const postreq = await fetch(
+      "https://script.google.com/macros/s/AKfycbx3WJS1pZvvqYvYb_MspyX8eM3KeU6JwjZJUahCFw9VZnLF_yxSe8VYMRmK01qk-DbPew/exec",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("postreq:", postreq, await postreq.json());
+  }
+
   startSpeechRecognition() {
     console.log("starting speech recognition...");
     document
@@ -68,7 +93,7 @@ class Journal {
     const data = await response.json();
     console.log("data:", data);
     // todo: handle error response
-    this.renderPalmResponse(data["candidates"][0]["output"]);
+    this.renderPalmResponse(data["candidates"][0]["output"], text);
   }
 
   renderUserMessage = (text) => {
@@ -83,12 +108,23 @@ class Journal {
     document.querySelector("#text-input")!.value = "";
   };
 
-  renderPalmResponse = (text) => {
-    console.log("rendering palm response:", text);
+  renderPalmResponse = (response, req) => {
+    console.log("rendering palm response:", response);
     const template = document
       .querySelector(".msg-container.palm")
       ?.cloneNode(true) as HTMLElement;
-    template.querySelector(".bubble span")!.innerHTML = marked.parse(text);
+    template.querySelector(".bubble span")!.innerHTML = marked.parse(response);
+    template.querySelector(".hidden-req")!.textContent = req;
+
+    // Listen for feedback click and submit form data.
+    template
+      .querySelector("button.positive")
+      ?.addEventListener("click", (e) => this.submitFeedback(e, "positive"));
+    template
+      .querySelector("button.negative")
+      ?.addEventListener("click", (e) => this.submitFeedback(e, "negative"));
+
+    // insert into board.
     document.querySelector(".board")?.appendChild(template);
   };
 }

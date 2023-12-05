@@ -1996,6 +1996,28 @@ ${content}</tr>
       });
       document.querySelector(".mic-button")?.addEventListener("click", this.startSpeechRecognition);
     }
+    async submitFeedback(event, feedbackType) {
+      console.log("submitting feedback...");
+      const container = event.target.closest(".msg-container");
+      const req = container.querySelector(".hidden-req")?.textContent;
+      const response = container.querySelector(".bubble span")?.textContent;
+      const feedbackData = {
+        request: req,
+        response,
+        feedbackType
+      };
+      console.log("sending feedbackData:", feedbackData);
+      const postreq = await fetch(
+        "https://script.google.com/macros/s/AKfycbx3WJS1pZvvqYvYb_MspyX8eM3KeU6JwjZJUahCFw9VZnLF_yxSe8VYMRmK01qk-DbPew/exec",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      console.log("postreq:", postreq, await postreq.json());
+    }
     startSpeechRecognition() {
       console.log("starting speech recognition...");
       document.querySelector("#text-input").setAttribute("placeholder", "Listening...");
@@ -2036,7 +2058,7 @@ ${content}</tr>
       console.log("response:", response);
       const data = await response.json();
       console.log("data:", data);
-      this.renderPalmResponse(data["candidates"][0]["output"]);
+      this.renderPalmResponse(data["candidates"][0]["output"], text);
     }
     renderUserMessage = (text) => {
       const template = document.querySelector(".msg-container.user")?.cloneNode(true);
@@ -2045,10 +2067,13 @@ ${content}</tr>
       document.querySelector(".board")?.appendChild(template);
       document.querySelector("#text-input").value = "";
     };
-    renderPalmResponse = (text) => {
-      console.log("rendering palm response:", text);
+    renderPalmResponse = (response, req) => {
+      console.log("rendering palm response:", response);
       const template = document.querySelector(".msg-container.palm")?.cloneNode(true);
-      template.querySelector(".bubble span").innerHTML = marked.parse(text);
+      template.querySelector(".bubble span").innerHTML = marked.parse(response);
+      template.querySelector(".hidden-req").textContent = req;
+      template.querySelector("button.positive")?.addEventListener("click", (e) => this.submitFeedback(e, "positive"));
+      template.querySelector("button.negative")?.addEventListener("click", (e) => this.submitFeedback(e, "negative"));
       document.querySelector(".board")?.appendChild(template);
     };
   };
