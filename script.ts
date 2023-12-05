@@ -24,23 +24,23 @@ class Journal {
     const req = container.querySelector(".hidden-req")?.textContent;
     const response = container.querySelector(".bubble span")?.textContent;
 
-    const feedbackData = {
-      request: req,
-      response: response,
-      feedbackType: feedbackType,
-    };
-    console.log("sending feedbackData:", feedbackData);
+    let formData = new FormData();
+    formData.append("Date", Date.now() + "");
+    formData.append("Request", req);
+    formData.append("Response", response);
+    formData.append("Feedback", feedbackType);
+    console.log("sending feedbackData:", formData);
 
-    const postreq = await fetch(
-      "https://script.google.com/macros/s/AKfycbx3WJS1pZvvqYvYb_MspyX8eM3KeU6JwjZJUahCFw9VZnLF_yxSe8VYMRmK01qk-DbPew/exec",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log("postreq:", postreq, await postreq.json());
+    const appScript =
+      "https://script.google.com/macros/s/AKfycbyc8Y7G9HvGjEoXRO2UXCmhQ03vq0BSAlmXyU4qNteFT8WcWzpZZAgwT76ZcDI4MfpFww/exec";
+
+    const postreq = await fetch(appScript, {
+      method: "POST",
+      mode: "no-cors",
+      body: formData,
+    });
+    // No response expected due to no-cors mode.
+    console.log("postreq:", postreq);
   }
 
   startSpeechRecognition() {
@@ -93,7 +93,12 @@ class Journal {
     const data = await response.json();
     console.log("data:", data);
     // todo: handle error response
-    this.renderPalmResponse(data["candidates"][0]["output"], text);
+    try {
+      const responseText = data["candidates"][0]["output"];
+      this.renderPalmResponse(responseText, text);
+    } catch (e) {
+      this.renderPalmResponse(e, text);
+    }
   }
 
   renderUserMessage = (text) => {
