@@ -286,6 +286,10 @@ i {
     color: white;
 }
 
+.hidden {
+    display: none !important;
+}
+
 @media only screen and (max-width: 600px) {
     #chat {
         margin: 0;
