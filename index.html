@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Journaling Demo</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div id="chat" class="wrapper">
+    <div class="board">
+      <div class="msg-container">
+        <div class="person">
+          <div class="avatar"><img src="./palm.webp" alt="Palm API" /></div>
+        </div>
+        <div class="context">
+          <div class="bubble"> <span>Somewhere stored deep, deep in my memory banks
+              is the phrase &quot;It really whips the llama's ass&quot;.</span></div>
+        </div>
+        <div class="message-options">
+          <button class="btn-icon option-button option-item emoji-button">
+            <i class="bi bi-hand-thumbs-up"></i>
+          </button>
+          <button class="btn-icon option-button option-item more-button">
+            <i class="bi bi-hand-thumbs-down"></i>
+          </button>
+        </div>
+      </div>
+      <div class="msg-container reversed">
+        <div class="person">
+          <div class="avatar"><img src="https://randomuser.me/api/portraits/men/9.jpg" alt="Dennis Mikle" /></div><span
+            class="person__nickname">Dennis Mikle</span>
+        </div>
+        <div class="context">
+          <div class="bubble"> <span>Winamp's still an essential.</span></div>
+        </div>        
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel__container">
+        <button class="panel__button panel-item btn-icon emoji-button">
+          <i class="bi bi-mic"></i>
+        </button>
+        <input class="panel__input panel-item" placeholder="Type a message..." />
+        <button class="panel__button panel-item btn-icon send-message-button">
+          <i class="bi bi-send-fill"></i>          
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+
+</html>
