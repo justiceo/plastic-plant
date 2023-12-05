@@ -58,23 +58,23 @@ body {
     overflow: auto;
 }
 
-#chat .msg-container.reversed {
+#chat .msg-container.user {
     flex-direction: row-reverse;
 }
 
-#chat .msg-container.reversed .bubble {
+#chat .msg-container.user .bubble {
     position: relative;
 }
 
-#chat .msg-container.reversed .bubble span:not(:last-child) {
+#chat .msg-container.user .bubble span:not(:last-child) {
     margin: 0 0 2em 0;
 }
 
-#chat .msg-container.reversed .person {
+#chat .msg-container.user .person {
     margin: 0 0 0 1.2em;
 }
 
-#chat .msg-container.reversed .message-options {
+#chat .msg-container.user .message-options {
     align-self: center;
     position: absolute;
     left: 0;
