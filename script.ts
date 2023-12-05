@@ -77,6 +77,9 @@ class Journal {
     template.classList.remove("hidden");
     template.querySelector(".bubble span")!.textContent = text;
     document.querySelector(".board")?.appendChild(template);
+
+    // Clear input field.
+    document.querySelector("#text-input")!.value = "";
   };
 
   renderPalmResponse = (text) => {
