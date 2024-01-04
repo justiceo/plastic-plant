@@ -1,0 +1,9 @@
+## To run
+
+```sh
+git clone git@github.com:justiceo/plastic-plant.git
+cd plastic-plant
+npm install
+node esbuild.js
+npx http-server .
+```

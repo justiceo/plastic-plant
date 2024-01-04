@@ -1,6 +1,33 @@
 import { marked } from "marked";
 
 class Journal {
+  isInitialRequest = true;
+  initialPrompt = `You are a good friend.  Address the user as "you". Provide each of the following bullet points for the user's Text Entry:
+
+    *Provide a brief empathic summarization using Rogerian person-centered reflective listening skills [50 words or less].  Call it a Summary.
+    
+    *2-3 Words to describe the mood.  Choose only from the following list: [Happy,Joyful,Excited,Content,Grateful,Loved,Peaceful,Hopeful,Inspired,Neutral,Calm,Relaxed,Focused,
+    Curious,Surprised,Thoughtful,Reflective,Indifferent,Ambivalent,Sad,Angry,Anxious,Fearful,Frustrated,Lonely,Guilty,Ashamed,Hurt],
+    
+    *Positive things said using bullet points,
+    
+    *Negative things said using bullet points,
+    
+    *Activities mentioned using bullet points otherwise write None.
+    
+    User's Text Entry: `;
+
+  followUpPrompt = `You speaking directly to your good friend about logging their sleep and fatigue. Directly respond to the user in a chat interface, using a prose writing style without any section headings. Do not talk about yourself.
+    First, provide some words of motivation based on the users log. [50 words or less]
+
+      Next, ask some questions [maximum 3 questions] to add more detail to their workout log to help fill out any missing topics. The log should provide enough detail to complete the following form:
+    * How difficult it was for them to fall asleep
+    * Whether they woke up at night
+    * How rested they felt in the morning
+    * How energized they are feeling during the day
+
+    Here is the journal entry to reference: `;
+
   init() {
     // Listen for "send" click and hit Palm API.
     document
@@ -61,7 +88,6 @@ class Journal {
   }
 
   async send(e) {
-    console.log("sending message...");
     e.preventDefault();
     const text = document.querySelector("#text-input")?.value;
     if (!text || !text.trim()) {
@@ -76,12 +102,15 @@ class Journal {
       "https://generativelanguage.googleapis.com/v1beta3/models/text-bison-001:generateText?key=" +
       apiKey;
 
+    const pretext = this.isInitialRequest ? this.initialPrompt : this.followUpPrompt;
     const requestData = {
       prompt: {
-        text: text,
+        text: pretext + text,
       },
     };
 
+    this.isInitialRequest = false;
+    console.log("sending message...", requestData);
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
